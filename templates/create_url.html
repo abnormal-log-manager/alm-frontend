@@ -1,17 +1,17 @@
 <!-- templates/create_url.html - Form to create new short URL -->
 {% extends "base.html" %}
 
-{% block title %}Create Short URL - URL Manager{% endblock %}
+{% block title %}Create New Issue - Abnormal Log Manager{% endblock %}
 
 {% block content %}
 <div class="card">
     <div class="card-header">
-        <h2>Create New Short URL</h2>
+        <h2>Create New Issue</h2>
     </div>
     
     <form method="POST">
         <div class="form-group">
-            <label for="original_url" class="form-label">Original URL *</label>
+            <label for="original_url" class="form-label">Event Original URL *</label>
             <input 
                 type="url" 
                 id="original_url" 
@@ -50,12 +50,12 @@
                         </option>
                     {% endfor %}
                 </select>
-                <small class="text-muted">Choose the importance level</small>
+                <small class="text-muted">Choose the impact level</small>
             </div>
         </div>
         
         <div>
-            <button type="submit" class="btn btn-primary">🔗 Create Short URL</button>
+            <button type="submit" class="btn btn-primary">🔗 Create Event Short URL</button>
             <a href="/" class="btn btn-secondary">Cancel</a>
         </div>
     </form>
@@ -79,7 +79,7 @@
             <ul>
                 <li><strong>Warning</strong></li>
                 <li><strong>Error</strong></li>
-                <li><strong>Fator</strong></li>
+                <li><strong>Fatal</strong></li>
             </ul>
         </div>
     </div>
@@ -92,7 +92,7 @@
     <ul>
         <li><code>https://www.google.com/search?q=python+web+development</code></li>
         <li><code>https://docs.python.org/3/tutorial/</code></li>
-        <li><code>https://github.com/yourusername/yourrepository</code></li>
+        <li><code>https://github.com/abnormal-log-manager/alm-frontend</code></li>
     </ul>
     <p class="text-muted"><small>💡 Tip: You can enter URLs with or without http:// - we'll add it automatically!</small></p>
 </div>

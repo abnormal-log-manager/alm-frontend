@@ -2,12 +2,12 @@
 
 {% block content %}
 <div class="card-header">
-    <h1>URL Management Dashboard</h1>
-    <p class="text-muted">Manage your shortened URLs</p>
+    <h1>Abnormal Log Management Dashboard</h1>
+    <p class="text-muted">Manage your event URLs</p>
 </div>
 
 <div style="margin-bottom: 1.5rem;">
-    <a href="/create" class="btn btn-primary">➕ Create New Short URL</a>
+    <a href="/create" class="btn btn-primary">➕ Create New Issue</a>
     <button onclick="refreshTable()" class="btn btn-info">🔄 Refresh</button>
     <a href="/stats" class="btn btn-success">📊 View Statistics</a>
 </div>
@@ -15,7 +15,7 @@
 <!-- Page Size Selector -->
 <div style="margin-bottom: 1rem;">
     <form method="GET" action="/">
-        <label for="page_size">URLs per page:</label>
+        <label for="page_size">Events per page:</label>
         <select name="page_size" id="page_size" onchange="this.form.submit()">
             <option value="10" {% if page_size == 10 %}selected{% endif %}>10</option>
             <option value="25" {% if page_size == 25 %}selected{% endif %}>25</option>
@@ -161,13 +161,13 @@
     {% else %}
         <div class="loading">
             <h3>No URLs found</h3>
-            <p>Start by <a href="/create">creating your first short URL</a></p>
+            <p>Start by <a href="/create">creating your first issue</a></p>
         </div>
     {% endif %}
 </div>
 
 <div class="text-muted" style="text-align: center; margin-top: 1rem;">
-    <small>Total URLs: {{ total_items }}</small>
+    <small>Total event: {{ total_items }}</small>
 </div>
 
 <script>
@@ -193,8 +193,8 @@ function refreshTable() {
 
 function confirmDelete(type, urlId) {
     const message = type === 'hard' 
-        ? 'Are you sure you want to permanently delete this URL? This action cannot be undone.' 
-        : 'Are you sure you want to soft delete this URL?';
+        ? 'Are you sure you want to permanently delete this issue? This action cannot be undone.' 
+        : 'Are you sure you want to soft delete this issue?';
     
     if (confirm(message)) {
         const url = type === 'hard' ? `/delete/${urlId}` : `/soft-delete/${urlId}`;

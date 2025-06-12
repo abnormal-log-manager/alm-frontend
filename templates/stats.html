@@ -1,26 +1,26 @@
 <!-- templates/stats.html - Statistics page with pie charts -->
 {% extends "base.html" %}
 
-{% block title %}Statistics - URL Manager{% endblock %}
+{% block title %}Statistics - Abnormal Log Manager{% endblock %}
 
 {% block content %}
 <div class="card-header">
     <h1>URL Statistics</h1>
-    <p class="text-muted">Overview of your URL management system</p>
+    <p class="text-muted">Overview of your log management system</p>
 </div>
 
 <div class="stats-grid">
     <div class="stat-card">
         <div class="stat-number">{{ stats.total_urls }}</div>
-        <div class="stat-label">Total URLs</div>
+        <div class="stat-label">Total Events</div>
     </div>
     <div class="stat-card">
         <div class="stat-number">{{ stats.active_urls }}</div>
-        <div class="stat-label">Active URLs</div>
+        <div class="stat-label">Active Events</div>
     </div>
     <div class="stat-card">
         <div class="stat-number">{{ stats.deleted_urls }}</div>
-        <div class="stat-label">Deleted URLs</div>
+        <div class="stat-label">Deleted Events</div>
     </div>
 </div>
 
@@ -48,7 +48,7 @@
 
 <div class="card">
     <div class="card-header">
-        <h3>Recent URLs</h3>
+        <h3>Recent Events</h3>
     </div>
     {% if urls %}
         <div class="table-container" style="margin: 0;">
@@ -86,13 +86,13 @@
             </table>
         </div>
     {% else %}
-        <p class="text-muted">No URLs found.</p>
+        <p class="text-muted">No Eventss found.</p>
     {% endif %}
 </div>
 
 <div>
     <a href="/" class="btn btn-primary">← Back to Dashboard</a>
-    <a href="/create" class="btn btn-success">Create New URL</a>
+    <a href="/create" class="btn btn-success">Create New Issue</a>
 </div>
 
 <!-- Chart.js Script -->

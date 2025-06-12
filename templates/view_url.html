@@ -1,7 +1,7 @@
 <!-- templates/view_url.html - View single URL details -->
 {% extends "base.html" %}
 
-{% block title %}URL Details - URL Manager{% endblock %}
+{% block title %}Event Details - Abnormal Log Manager{% endblock %}
 
 {% block content %}
 <div class="card">
@@ -86,56 +86,7 @@
     </div>
 </div>
 
-<!-- Additional Info Card -->
-<div class="card">
-    <div class="card-header">
-        <h3>Classification Information</h3>
-    </div>
-    
-    <div class="info-grid">
-        <div class="info-item">
-            <div class="info-label">Team Classification</div>
-            <div class="info-content">
-                {% if url.team == 'IAS' %}
-                    <strong>Information Assurance & Security</strong><br>
-                    <small class="text-muted">URLs managed by the security team, typically involving security-related resources or sensitive information.</small>
-                {% elif url.team == 'DEV' %}
-                    <strong>Development Team</strong><br>
-                    <small class="text-muted">URLs related to development resources, documentation, repositories, or development tools.</small>
-                {% elif url.team == 'Others' %}
-                    <strong>Other Departments</strong><br>
-                    <small class="text-muted">URLs managed by other departments or general purpose links.</small>
-                {% else %}
-                    <span class="text-muted">No team assigned</span>
-                {% endif %}
-            </div>
-        </div>
-        
-        <div class="info-item">
-            <div class="info-label">Risk Level</div>
-            <div class="info-content">
-                {% if url.level == 'Cautious' %}
-                    <strong>Cautious</strong><br>
-                    <small class="text-muted">Low risk, general purpose URLs that require minimal attention.</small>
-                {% elif url.level == 'Warning' %}
-                    <strong>Warning</strong><br>
-                    <small class="text-muted">Moderate risk URLs that require some attention and monitoring.</small>
-                {% elif url.level == 'Danger' %}
-                    <strong>Danger</strong><br>
-                    <small class="text-muted">High risk URLs that require careful handling and regular monitoring.</small>
-                {% elif url.level == 'Critical' %}
-                    <strong>Critical</strong><br>
-                    <small class="text-muted">Very high risk URLs requiring urgent attention and immediate action.</small>
-                {% elif url.level == 'Error' %}
-                    <strong>Error</strong><br>
-                    <small class="text-muted">System error URLs that need immediate investigation and resolution.</small>
-                {% else %}
-                    <span class="text-muted">No risk level set</span>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <style>
 .detail-row {

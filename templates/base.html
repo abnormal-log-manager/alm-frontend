@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}URL Management Dashboard{% endblock %}</title>
+    <title>{% block title %}Abnormal Log Manager{% endblock %}</title>
     <style>
         * {
             margin: 0;
@@ -302,10 +302,10 @@
 <body>
     <nav class="navbar">
         <div class="container">
-            <a href="/" class="navbar-brand">🔗 URL Manager</a>
+            <a href="/" class="navbar-brand">🔗Abnormal Log Manager</a>
             <ul class="navbar-nav">
                 <li><a href="/" class="nav-link">Dashboard</a></li>
-                <li><a href="/create" class="nav-link">Create URL</a></li>
+                <li><a href="/create" class="nav-link">Create Issue</a></li>
                 <li><a href="/stats" class="nav-link">Statistics</a></li>
             </ul>
         </div>
@@ -354,8 +354,8 @@
         // Confirm delete function
         function confirmDelete(action, id) {
             const message = action === 'soft' ? 
-                'Are you sure you want to soft delete this URL?' : 
-                'Are you sure you want to permanently delete this URL?';
+                'Are you sure you want to soft delete this issue?' : 
+                'Are you sure you want to permanently delete this issue?';
             
             if (confirm(message)) {
                 const url = action === 'soft' ? `/soft-delete/${id}` : `/delete/${id}`;
