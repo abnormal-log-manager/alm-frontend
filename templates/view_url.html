@@ -1,0 +1,193 @@
+<!-- templates/view_url.html - View single URL details -->
+{% extends "base.html" %}
+
+{% block title %}URL Details - URL Manager{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>URL Details</h2>
+    </div>
+    
+    <div class="form-group">
+        <label class="form-label">ID</label>
+        <div class="form-control-plaintext">{{ url.id }}</div>
+    </div>
+    
+    <div class="form-group">
+        <label class="form-label">Original URL</label>
+        <div class="form-control-plaintext">
+            <a href="{{ url.originalUrl }}" target="_blank">{{ url.originalUrl }}</a>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label class="form-label">Shortened URL</label>
+        <div class="form-control-plaintext">
+            {% if url.shortenedUrl %}
+                <a href="{{ url.shortenedUrl }}" target="_blank">{{ url.shortenedUrl }}</a>
+                <button onclick="copyToClipboard('{{ url.shortenedUrl }}')" class="btn btn-sm btn-info">Copy</button>
+            {% else %}
+                <span class="text-muted">Not generated</span>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="detail-row">
+        <div class="form-group" style="width: 48%; display: inline-block; margin-right: 4%;">
+            <label class="form-label">Team</label>
+            <div class="form-control-plaintext">
+                {% if url.team %}
+                    <span class="badge {{ url.team | get_team_badge_class }}" style="font-size: 0.9rem; padding: 0.4rem 0.8rem;">
+                        🏢 {{ url.team }}
+                    </span>
+                {% else %}
+                    <span class="text-muted">Not assigned</span>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="form-group" style="width: 48%; display: inline-block;">
+            <label class="form-label">Level</label>
+            <div class="form-control-plaintext">
+                {% if url.level %}
+                    <span class="badge {{ url.level | get_level_badge_class }}" style="font-size: 0.9rem; padding: 0.4rem 0.8rem;">
+                        ⚠️ {{ url.level }}
+                    </span>
+                {% else %}
+                    <span class="text-muted">Not set</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label class="form-label">Status</label>
+        <div class="form-control-plaintext">
+            {% if url.isDeleted %}
+                <span class="badge badge-danger">🗑️ Deleted</span>
+            {% else %}
+                <span class="badge badge-success">✅ Active</span>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label class="form-label">Created At</label>
+        <div class="form-control-plaintext">{{ url.createdAt | format_datetime if url.createdAt else 'N/A' }}</div>
+    </div>
+    
+    <div>
+        <a href="/" class="btn btn-primary">← Back to Dashboard</a>
+        {% if not url.isDeleted %}
+            <button onclick="confirmDelete('soft', {{ url.id }})" class="btn btn-warning">Soft Delete</button>
+        {% endif %}
+        <button onclick="confirmDelete('hard', {{ url.id }})" class="btn btn-danger">Permanent Delete</button>
+    </div>
+</div>
+
+<!-- Additional Info Card -->
+<div class="card">
+    <div class="card-header">
+        <h3>Classification Information</h3>
+    </div>
+    
+    <div class="info-grid">
+        <div class="info-item">
+            <div class="info-label">Team Classification</div>
+            <div class="info-content">
+                {% if url.team == 'IAS' %}
+                    <strong>Information Assurance & Security</strong><br>
+                    <small class="text-muted">URLs managed by the security team, typically involving security-related resources or sensitive information.</small>
+                {% elif url.team == 'DEV' %}
+                    <strong>Development Team</strong><br>
+                    <small class="text-muted">URLs related to development resources, documentation, repositories, or development tools.</small>
+                {% elif url.team == 'Others' %}
+                    <strong>Other Departments</strong><br>
+                    <small class="text-muted">URLs managed by other departments or general purpose links.</small>
+                {% else %}
+                    <span class="text-muted">No team assigned</span>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="info-item">
+            <div class="info-label">Risk Level</div>
+            <div class="info-content">
+                {% if url.level == 'Cautious' %}
+                    <strong>Cautious</strong><br>
+                    <small class="text-muted">Low risk, general purpose URLs that require minimal attention.</small>
+                {% elif url.level == 'Warning' %}
+                    <strong>Warning</strong><br>
+                    <small class="text-muted">Moderate risk URLs that require some attention and monitoring.</small>
+                {% elif url.level == 'Danger' %}
+                    <strong>Danger</strong><br>
+                    <small class="text-muted">High risk URLs that require careful handling and regular monitoring.</small>
+                {% elif url.level == 'Critical' %}
+                    <strong>Critical</strong><br>
+                    <small class="text-muted">Very high risk URLs requiring urgent attention and immediate action.</small>
+                {% elif url.level == 'Error' %}
+                    <strong>Error</strong><br>
+                    <small class="text-muted">System error URLs that need immediate investigation and resolution.</small>
+                {% else %}
+                    <span class="text-muted">No risk level set</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.detail-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 1rem;
+}
+
+.info-item {
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 0.375rem;
+    border-left: 4px solid #007bff;
+}
+
+.info-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+.info-content {
+    color: #6c757d;
+}
+
+.form-control-plaintext {
+    padding: 0.375rem 0;
+    margin-bottom: 0;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #212529;
+    background-color: transparent;
+    border: solid transparent;
+    border-width: 1px 0;
+}
+
+@media (max-width: 768px) {
+    .detail-row .form-group {
+        width: 100% !important;
+        margin-right: 0 !important;
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}

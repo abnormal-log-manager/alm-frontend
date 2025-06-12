@@ -1,0 +1,12 @@
+<!-- templates/error.html - Error page -->
+{% extends "base.html" %}
+
+{% block title %}Error {{ error_code }} - URL Manager{% endblock %}
+
+{% block content %}
+<div class="card" style="text-align: center;">
+    <h1>Error {{ error_code }}</h1>
+    <p>{{ error_message }}</p>
+    <a href="/" class="btn btn-primary">← Go Home</a>
+</div>
+{% endblock %}
