@@ -3,6 +3,7 @@
 ## Mục đích:
 
 Các link log query trong splunk thường rất dài nên app được tạo ra để rút gọn lại các link query, đồng thời tổng hợp các event bất thường lại vào một nơi để theo dõi một cách trực quan hơn. Các issue được tạo sẽ lưu vào trong database
+
 Document chi tiết: https://www.notion.so/Web-app-Th-ng-K-L-i-H-Th-ng-Abnormal-Log-Manager-20791f52357a80f091dcdeebbf268a5d?source=copy_link
 
 ## Chức năng chính:
