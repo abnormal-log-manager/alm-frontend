@@ -6,9 +6,9 @@ Các link log query trong splunk thường rất dài nên app được tạo ra
 Document chi tiết: https://www.notion.so/Web-app-Th-ng-K-L-i-H-Th-ng-Abnormal-Log-Manager-20791f52357a80f091dcdeebbf268a5d?source=copy_link
 
 ## Chức năng chính:
-# Create issue
-# Dashboard
-# Statistic
+#### Create issue
+#### Dashboard
+#### Statistic
 
 ## Known Bugs:
 
