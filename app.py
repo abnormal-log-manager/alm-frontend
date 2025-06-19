@@ -10,7 +10,7 @@ app = Flask(__name__)
 app.secret_key = 'your-secret-key-change-this'  # Change this in production
 
 # Configuration - Update these to match your API
-API_BASE_URL = 'http://172.25.192.1:5107/api'  # Change to your API URL
+API_BASE_URL = 'http://alm-api/api'  # Change to your API URL
 SHORTURL_ENDPOINT = f'{API_BASE_URL}/ShortUrl'
 REDIRECT_ENDPOINT = f'{API_BASE_URL}/r'
 
@@ -127,6 +127,25 @@ class ShortUrlAPI:
         except requests.exceptions.RequestException as e:
             print(f"Search exception: {e}")
             return {'Data': [], 'TotalItems': 0}
+        
+    @staticmethod
+    def get_team_stats(days=None):
+        """Get warning level stats per team, optionally filtered by days"""
+        try:
+            params = {}
+            if days:
+                params["days"] = days
+            response = requests.get(f"{API_BASE_URL}/stats/per-team", params=params, verify=False)
+            if response.status_code == 200:
+                return response.json()
+            else:
+                print("Stats API returned", response.status_code, response.text)
+            return {}
+        except requests.exceptions.RequestException as e:
+            print(f"Error fetching team-level stats: {e}")
+            return {}
+
+
 # Route 1: Dashboard - Show all URLs in a table
 @app.route('/')
 def dashboard():
@@ -244,31 +263,71 @@ def test_redirect(short_code):
 # Route 8: Statistics/Info page
 @app.route('/stats')
 def stats():
-    data = ShortUrlAPI.get_all_urls(page=1, page_size=100)  # Fetch all URLs for stats
-    urls = data.get('Data', [])
-    
-    # Calculate statistics
+    from datetime import datetime, timedelta
+
+    days_filter = request.args.get('days', type=int)
+    data = ShortUrlAPI.get_all_urls(page=1, page_size=1000)
+    all_urls = data.get('Data', [])
+
+    # Handle possible format issues in createDate
+    def parse_date_safe(s):
+        try:
+            if '.' in s:
+                s = s.split('.')[0]
+            return datetime.fromisoformat(s)
+        except Exception:
+            return None
+
+    now = datetime.utcnow()
+    if days_filter:
+        threshold = now - timedelta(days=days_filter)
+    else:
+        threshold = None
+
+    filtered_urls = []
+    for url in all_urls:
+        created_str = url.get('createDate')
+        created_at = parse_date_safe(created_str) if created_str else None
+        if not created_at:
+            continue
+        if threshold is None or created_at >= threshold:
+            filtered_urls.append(url)
+
+    active_urls = [u for u in filtered_urls if not u.get('isDeleted', False)]
+    deleted_urls = [u for u in filtered_urls if u.get('isDeleted', False)]
+
     stats_data = {
-        'total_urls': len(urls),
-        'active_urls': len([url for url in urls if not url.get('isDeleted', False)]),
-        'deleted_urls': len([url for url in urls if url.get('isDeleted', True)])
+        'total_urls': len(filtered_urls),
+        'active_urls': len(active_urls),
+        'deleted_urls': len(deleted_urls)
     }
-    
-    # Calculate team distribution
-    team_counts = {}
-    for team in TEAMS:
-        team_counts[team] = len([url for url in urls if url.get('team') == team])
-    
-    # Calculate level distribution
-    level_counts = {}
-    for level in LEVELS:
-        level_counts[level] = len([url for url in urls if url.get('level') == level])
-    
-    return render_template('stats.html', 
-                         stats=stats_data, 
-                         urls=urls, 
-                         team_counts=team_counts, 
-                         level_counts=level_counts)
+
+    # Team and level stats for chart
+    team_counts = {team: 0 for team in TEAMS}
+    level_counts = {level: 0 for level in LEVELS}
+
+    for url in filtered_urls:
+        t = url.get('team')
+        l = url.get('level')
+        if t in team_counts:
+            team_counts[t] += 1
+        if l in level_counts:
+            level_counts[l] += 1
+
+    # For the team-level table
+    team_level_stats = ShortUrlAPI.get_team_stats(days=days_filter)
+    print("Team level stats:", team_level_stats)
+
+    return render_template(
+        'stats.html',
+        stats=stats_data,
+        urls=filtered_urls[:10],
+        team_counts=team_counts,
+        level_counts=level_counts,
+        team_level_stats=team_level_stats,
+        selected_days=days_filter
+    )
+
 
 # Error handlers
 @app.errorhandler(404)
