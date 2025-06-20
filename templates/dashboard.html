@@ -41,7 +41,6 @@
                     <option value="{{ l }}" {% if l == selected_level %}selected{% endif %}>{{ l }}</option>
                 {% endfor %}
             </select>
-            <input type="text" name="short_code" placeholder="8-digit code" value="{{ request.args.get('short_code', '') }}">
             <select name="sort_by">
                 <option value="">Sort By</option>
                 <option value="id" {% if selected_sort == 'id' %}selected{% endif %}>ID</option>
@@ -54,6 +53,10 @@
                 <option value="true" {% if selected_descending %}selected{% endif %}>Desc</option>
             </select>
             <button type="submit" class="btn btn-sm btn-primary">🔍 Filter</button>
+        </form>
+        <form method="get" action="/search" style="margin-bottom: 1rem;">
+            <input type="text" name="query" placeholder="🔍 Search by original or short URL" style="width: 300px;" required>
+            <button type="submit" class="btn btn-primary btn-sm">Search</button>
         </form>
         <table class="table">
             <thead>

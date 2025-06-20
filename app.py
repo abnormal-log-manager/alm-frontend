@@ -101,8 +101,8 @@ class ShortUrlAPI:
             return False
             
     @staticmethod
-    def search_urls(page=1, page_size=10, team=None, level=None, created=None, short_code=None, sort_by=None, descending=False):
-        """Search and sort URLs"""
+    def filter_urls(page=1, page_size=10, team=None, level=None, created=None, sort_by=None, descending=False):
+        """Filter and sort URLs"""
         try:
             params = {
                 "page": page,
@@ -115,12 +115,10 @@ class ShortUrlAPI:
                 params["level"] = level
             if created:
                 params["createdDate"] = created
-            if short_code:
-                params["shortCode"] = short_code
             if sort_by:
                 params["sortBy"] = sort_by
 
-            response = requests.get(f'{SHORTURL_ENDPOINT}/search', params=params, verify=False)
+            response = requests.get(f'{SHORTURL_ENDPOINT}/filter', params=params, verify=False)
             if response.status_code == 200:
                 return response.json()
             return {'Data': [], 'TotalItems': 0}
@@ -145,6 +143,17 @@ class ShortUrlAPI:
             print(f"Error fetching team-level stats: {e}")
             return {}
 
+    @staticmethod
+    def search_urls(query):
+        """Search by original URL or short code or full short URL"""
+        try:
+            response = requests.get(f'{SHORTURL_ENDPOINT}/search', params={'query':query}, verify= False)
+            if response.status_code == 200:
+                return response.json()
+            return None
+        except requests.exceptions.RequestException as e:
+            print(f"Search by query exception: {e}")
+            return None
 
 # Route 1: Dashboard - Show all URLs in a table
 @app.route('/')
@@ -154,11 +163,10 @@ def dashboard():
     team = request.args.get('team')
     level = request.args.get('level')
     created = request.args.get('created')  # expected format: yyyy-mm-dd
-    short_code = request.args.get('short_code')
     sort_by = request.args.get('sort_by')
     descending = request.args.get('descending') == 'true'
 
-    data = ShortUrlAPI.search_urls(page, page_size, team, level, created, short_code, sort_by, descending)
+    data = ShortUrlAPI.filter_urls(page, page_size, team, level, created, sort_by, descending)
 
     return render_template(
         'dashboard.html',
@@ -173,7 +181,32 @@ def dashboard():
         selected_sort=sort_by,
         selected_descending=descending
     )
+# Route 1.1: Dashboard - Search query and show data in dashboard table
+@app.route('/search', methods=['GET'])
+def search_query():
+    query = request.args.get('query')
+    if not query:
+        flash("Please enter a search value.", "error")
+        return redirect(url_for('dashboard'))
 
+    result = ShortUrlAPI.search_urls(query)
+    if result:
+        return render_template(
+            'dashboard.html',
+            urls=[result],  # wrap single result in list
+            page=1,
+            page_size=1,
+            total_pages=1,
+            total_items=1,
+            selected_team=None,
+            selected_level=None,
+            selected_created=None,
+            selected_sort=None,
+            selected_descending=False
+        )
+    else:
+        flash("No matching result found.", "error")
+        return redirect(url_for('dashboard'))
 # Route 2: Create new short URL
 @app.route('/create', methods=['GET', 'POST'])
 def create_url():
