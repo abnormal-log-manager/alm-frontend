@@ -2,6 +2,7 @@
 
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 import requests
+import time
 import json
 from datetime import datetime
 
@@ -165,9 +166,19 @@ def dashboard():
     created = request.args.get('created')  # expected format: yyyy-mm-dd
     sort_by = request.args.get('sort_by')
     descending = request.args.get('descending') == 'true'
+    page = 1
+    page_size = 10
+    total_pages = 4
+    total_time = 0
 
     data = ShortUrlAPI.filter_urls(page, page_size, team, level, created, sort_by, descending)
+    for p in range(1, total_pages + 1):
+        start = time.time()
+        result = get_paginated_data(p, page_size)
+        duration = time.time() - start
+        total_time += duration
 
+    print(f"[BACKEND] Total API load time: {total_time:.2f} seconds for {total_pages} pages")
     return render_template(
         'dashboard.html',
         urls=data.get('data', []),
@@ -181,6 +192,14 @@ def dashboard():
         selected_sort=sort_by,
         selected_descending=descending
     )
+def get_paginated_data(page, page_size):
+    start = time.time()
+    response = requests.get(f"{SHORTURL_ENDPOINT}?page={page}&pageSize={page_size}", verify=False)
+    elapsed = time.time() - start
+    print(f"[BACKEND] API Page {page} took {elapsed:.2f} seconds")
+    if response.status_code == 200:
+        return response.json()
+    return {}
 # Route 1.1: Dashboard - Search query and show data in dashboard table
 @app.route('/search', methods=['GET'])
 def search_query():
@@ -350,7 +369,7 @@ def stats():
     # For the team-level table
     team_level_stats = ShortUrlAPI.get_team_stats(days=days_filter)
     print("Team level stats:", team_level_stats)
-
+    print(f"[BACKEND] Total API load time: {total_time:.2f} seconds for {total_pages} pages")
     return render_template(
         'stats.html',
         stats=stats_data,
@@ -360,7 +379,14 @@ def stats():
         team_level_stats=team_level_stats,
         selected_days=days_filter
     )
-
+def get_paginated_data(page, page_size):
+    start = time.time()
+    response = requests.get(f"{SHORTURL_ENDPOINT}?page={page}&pageSize={page_size}", verify=False)
+    elapsed = time.time() - start
+    print(f"[BACKEND] API Page {page} took {elapsed:.2f} seconds")
+    if response.status_code == 200:
+        return response.json()
+    return {}
 
 # Error handlers
 @app.errorhandler(404)
