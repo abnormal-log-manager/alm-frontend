@@ -166,8 +166,7 @@ def dashboard():
     created = request.args.get('created')  # expected format: yyyy-mm-dd
     sort_by = request.args.get('sort_by')
     descending = request.args.get('descending') == 'true'
-    page = 1
-    page_size = 10
+    
     total_pages = 4
     total_time = 0
 
