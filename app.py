@@ -369,7 +369,7 @@ def stats():
     # For the team-level table
     team_level_stats = ShortUrlAPI.get_team_stats(days=days_filter)
     print("Team level stats:", team_level_stats)
-    print(f"[BACKEND] Total API load time: {total_time:.2f} seconds for {total_pages} pages")
+    
     return render_template(
         'stats.html',
         stats=stats_data,
@@ -379,15 +379,6 @@ def stats():
         team_level_stats=team_level_stats,
         selected_days=days_filter
     )
-def get_paginated_data(page, page_size):
-    start = time.time()
-    response = requests.get(f"{SHORTURL_ENDPOINT}?page={page}&pageSize={page_size}", verify=False)
-    elapsed = time.time() - start
-    print(f"[BACKEND] API Page {page} took {elapsed:.2f} seconds")
-    if response.status_code == 200:
-        return response.json()
-    return {}
-
 # Error handlers
 @app.errorhandler(404)
 def not_found_error(error):
