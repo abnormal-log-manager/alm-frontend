@@ -92,7 +92,8 @@ endblock %} {% block content %}
                 </tr>
             </thead>
             <tbody>
-                {% for url in urls[:10] %}
+                {% set sorted_urls = urls | sort(attribute='createDate', reverse=true) %}
+                {% for url in sorted_urls[:10] %}
                 <tr>
                     <td class="text-truncate">
                         {{ url.originalUrl | truncate_url(80) }}
