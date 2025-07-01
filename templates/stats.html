@@ -8,16 +8,16 @@ endblock %} {% block content %}
 
 <div class="stats-grid">
     <div class="stat-card">
-        <div class="stat-number">{{ stats.total_urls }}</div>
-        <div class="stat-label">Total Events</div>
+        <div class="stat-number">{{ stats.warn_events }}</div>
+        <div class="stat-label">Warn Events</div>
     </div>
     <div class="stat-card">
-        <div class="stat-number">{{ stats.active_urls }}</div>
-        <div class="stat-label">Active Events</div>
+        <div class="stat-number">{{ stats.error_events }}</div>
+        <div class="stat-label">Error Events</div>
     </div>
     <div class="stat-card">
-        <div class="stat-number">{{ stats.deleted_urls }}</div>
-        <div class="stat-label">Deleted Events</div>
+        <div class="stat-number">{{ stats.fatal_events }}</div>
+        <div class="stat-label">Fatal Events</div>
     </div>
 </div>
 <!-- Time selection-->
@@ -84,10 +84,10 @@ endblock %} {% block content %}
         <table class="table">
             <thead>
                 <tr>
-                    <th>Original URL</th>
+                    <th>URL</th>
                     <th>Team</th>
                     <th>Level</th>
-                    <th>Status</th>
+                    
                     <th>Created</th>
                 </tr>
             </thead>
@@ -96,7 +96,9 @@ endblock %} {% block content %}
                 {% for url in sorted_urls[:10] %}
                 <tr>
                     <td class="text-truncate">
-                        {{ url.originalUrl | truncate_url(80) }}
+                        <a href="{{ url.shortenedUrl }}" target="_blank" class="text-decoration-none">
+                            {{ url.shortenedUrl | truncate_url(40) }}
+                        </a>
                     </td>
                     <td>
                         <span class="badge {{ url.team | get_team_badge_class }}">{{ url.team }}</span>
@@ -104,15 +106,9 @@ endblock %} {% block content %}
                     <td>
                         <span class="badge {{ url.level | get_level_badge_class }}">{{ url.level }}</span>
                     </td>
-                    <td>
-                        {% if url.isDeleted %}
-                        <span class="badge badge-danger">Deleted</span>
-                        {% else %}
-                        <span class="badge badge-success">Active</span>
-                        {% endif %}
-                    </td>
+                    
                     <td class="text-muted">
-                        {{ url.createDate | format_datetime if url.createDate else 'N/A' }}
+                        {{ url.createDateIct | format_datetime if url.createDateIct else 'N/A' }}
                     </td>
                 </tr>
                 {% endfor %}

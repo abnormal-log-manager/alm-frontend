@@ -164,8 +164,8 @@ def dashboard():
     team = request.args.get('team')
     level = request.args.get('level')
     created = request.args.get('created')  # expected format: yyyy-mm-dd
-    sort_by = request.args.get('sort_by')
-    descending = request.args.get('descending') == 'true'
+    sort_by = request.args.get('sort_by') or 'created'
+    descending = request.args.get('descending', 'true').lower() == 'true'
     
     total_pages = 4
     total_time = 0
@@ -317,8 +317,13 @@ def stats():
     from datetime import datetime, timedelta
 
     days_filter = request.args.get('days', type=int)
-    data = ShortUrlAPI.get_all_urls(page=1, page_size=1000)
-    all_urls = data.get('Data', [])
+    data = ShortUrlAPI.filter_urls(
+        page=1,
+        page_size=1000,
+        sort_by='created',
+        descending=True
+    )
+    all_urls = data.get('data', [])
 
     # Handle possible format issues in createDate
     def parse_date_safe(s):
@@ -346,13 +351,6 @@ def stats():
 
     active_urls = [u for u in filtered_urls if not u.get('isDeleted', False)]
     deleted_urls = [u for u in filtered_urls if u.get('isDeleted', False)]
-
-    stats_data = {
-        'total_urls': len(filtered_urls),
-        'active_urls': len(active_urls),
-        'deleted_urls': len(deleted_urls)
-    }
-
     # Team and level stats for chart
     team_counts = {team: 0 for team in TEAMS}
     level_counts = {level: 0 for level in LEVELS}
@@ -364,7 +362,11 @@ def stats():
             team_counts[t] += 1
         if l in level_counts:
             level_counts[l] += 1
-
+    stats_data = {
+        'warn_events': level_counts.get('Warn', 0),
+        'error_events': level_counts.get('Error', 0),
+        'fatal_events': level_counts.get('Fatal', 0)
+    }
     # For the team-level table
     team_level_stats = ShortUrlAPI.get_team_stats(days=days_filter)
     print("Team level stats:", team_level_stats)

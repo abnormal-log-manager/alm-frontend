@@ -66,7 +66,6 @@
                     <th>Shortened URL</th>
                     <th>Team</th>
                     <th>Level</th>
-                    <th>Status</th>
                     <th>Created</th>
                     <th>Actions</th>
                 </tr>
@@ -87,9 +86,6 @@
                             <a href="{{ url.shortenedUrl }}" target="_blank" class="text-decoration-none">
                                 {{ url.shortenedUrl | truncate_url(40) }}
                             </a>
-                            <button onclick="copyToClipboard('{{ url.shortenedUrl }}')" class="btn btn-sm btn-info" title="Copy to clipboard">
-                                📋
-                            </button>
                         {% else %}
                             <span class="text-muted">Not generated</span>
                         {% endif %}
@@ -112,30 +108,18 @@
                             <span class="text-muted">N/A</span>
                         {% endif %}
                     </td>
-                    <td>
-                        {% if url.isDeleted %}
-                            <span class="badge badge-danger">Deleted</span>
-                        {% else %}
-                            <span class="badge badge-success">Active</span>
-                        {% endif %}
-                    </td>
+                    
                     <td class="text-muted">
-                        {{ url.createDate | format_datetime if url.createDate else 'N/A' }}
+                        {{ url.createDateIct | format_datetime if url.createDateIct else 'N/A' }}
                     </td>
                     <td>
-                        <a href="/view/{{ url.id }}" class="btn btn-sm btn-info" title="View Details">👁️</a>
-                        {% if not url.isDeleted %}
-                            <button onclick="confirmDelete('soft', {{ url.id }})" class="btn btn-sm btn-warning" title="Soft Delete">
-                                🗑️
-                            </button>
-                        {% endif %}
+                        {% if url.shortenedUrl %}
                         <button onclick="confirmDelete('hard', {{ url.id }})" class="btn btn-sm btn-danger" title="Permanent Delete">
                             ❌
                         </button>
-                        {% if url.shortenedUrl %}
-                            <a href="/test-redirect/{{ url.shortenedUrl.split('/')[-1] }}" class="btn btn-sm btn-success" title="Test Redirect">
-                                🔗
-                            </a>
+                        <button onclick="copyToClipboard('{{ url.shortenedUrl }}')" class="btn btn-sm btn-info" title="Copy to clipboard">
+                            📋
+                        </button>
                         {% endif %}
                     </td>
                 </tr>
