@@ -1,27 +1,34 @@
-# Web-app Thống Kê Lỗi Hệ Thống Abnormal Log Manager
+# Tổng quan
 
-## Mục đích:
+**Abnormal Log Manager (ALM)** là một web app quản lý log lỗi, cho phép người dùng:
 
-Các link log query trong splunk thường rất dài nên app được tạo ra để rút gọn lại các link query, đồng thời tổng hợp các event bất thường lại vào một nơi để theo dõi một cách trực quan hơn. Các issue được tạo sẽ lưu vào trong database
+- Rút gọn các URL log lỗi dài dòng thành dạng ngắn gọn.
+- Gắn nhãn cho mỗi log theo `Team` và `Mức độ lỗi (Level)` như: `Warn`, `Error`, `Fatal`.
+- Theo dõi, tìm kiếm, và thống kê các lỗi theo từng nhóm/team và mức độ.
+- Hiển thị dữ liệu qua giao diện biểu đồ (bar & pie charts).
 
-Document chi tiết: https://www.notion.so/Web-app-Th-ng-K-L-i-H-Th-ng-Abnormal-Log-Manager-20791f52357a80f091dcdeebbf268a5d?source=copy_link
+Ứng dụng được xây dựng bằng:
 
-## Chức năng chính:
-#### Create issue
-#### Dashboard
-#### Statistic
+- Backend: Python (Flask) kết nối đến một API dịch vụ .NET.
+- Frontend: HTML/CSS sử dụng Jinja2 templating.
+- API Backend: .NET Web API lưu trữ dữ liệu và xử lý ngắn URL.
+# Document chi tiết
+https://www.notion.so/Abnormal-Log-Manager-Documentation-22391f52357a80f5a1ccdbc302b87629?source=copy_link
+## TODO
 
-## Known Bugs:
+- ~~feat: thống kê mỗi team có các event level impact nào
+e.g: Team TMS có 10 event ở level Warn, 6 ở level Error, 1 ở Level Fatal~~ (**done** 19/6)
+- ~~feat: Thống kê theo tháng~~ (**done** 19/6)
+- Điều chỉnh lại giao diện: e.g: https://comeout.netlify.app/demo/default/portfolio
 
-- Sau khi soft-delete thì ko thể permanent-delete được
-- Recent events chưa sắp xếp theo ngày tạo mới nhất, dẫn đến những issue tạo sau này có thể không xuất hiện trên list
-- Recent events format giờ hơi sai so với giờ địa phương (có vẻ do mặc định utc hay thì utc+7)
+---
 
-## TODO:
+## Source Code:
 
-- TODO: new-feat để thống kê mỗi team có các event level impact nào
-e.g: Team TMS có 10 event ở level Warn, 6 ở level Error, 1 ở Level Fatal (done 19/6)
-- Thống kê theo tháng (done 19/6)
-- Chắc bỏ không hiển thị ID lên trang web (view ID trên web thấy không có tác dụng gì cả)
-
-REPO: https://github.com/orgs/abnormal-log-manager/dashboard
+- Backend
+    
+    https://github.com/abnormal-log-manager/alm-backend
+    
+- Frontend
+    
+    https://github.com/abnormal-log-manager/alm-frontend
