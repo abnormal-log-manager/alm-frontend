@@ -252,7 +252,7 @@ def create_url():
         if not original_url.startswith(('http://', 'https://')):
             original_url = 'http://' + original_url
         
-        result = ShortUrlAPI.create_short_url(original_url, team, level)
+        result = ShortUrlAPI.create_short_url(original_url, team, level, title)
         if result:
             flash(f'Short URL created successfully for {team} team with {level} level!', 'success')
             return redirect(url_for('dashboard'))
