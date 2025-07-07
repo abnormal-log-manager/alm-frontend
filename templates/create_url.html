@@ -24,6 +24,13 @@
             <small class="text-muted">Enter the long URL you want to shorten</small>
         </div>
 
+        <div class="form-group">
+            <label for="title" class="form-label">Title (optional)</label>
+            <input type="text" id="title" name="title" class="form-control" placeholder="e.g., Internal Server Error Log"
+                value="{{ request.form.title if request.form.title }}">
+            <small class="text-muted">Leave blank to auto-generate from URL</small>
+        </div>
+
         <div class="form-row">
             <div class="form-group" style="width: 48%; display: inline-block; margin-right: 4%;">
                 <label for="team" class="form-label">Team *</label>

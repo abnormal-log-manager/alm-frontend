@@ -47,7 +47,7 @@ class ShortUrlAPI:
             return {'Data': [], 'TotalItems': 0, 'Page': page, 'PageSize': page_size, 'TotalPages': 0}
     
     @staticmethod
-    def create_short_url(original_url, team, level):
+    def create_short_url(original_url, team, level, title):
         """Create a new shortened URL with team and level"""
         try:
             payload = {
@@ -55,6 +55,8 @@ class ShortUrlAPI:
                 'team': team,
                 'level': level
             }
+            if title:
+                payload['title'] = title
             headers = {'Content-Type': 'application/json'}
             response = requests.post(
                 SHORTURL_ENDPOINT, 
@@ -230,6 +232,7 @@ def search_query():
 def create_url():
     if request.method == 'POST':
         original_url = request.form['original_url'].strip()
+        title = request.form.get('title')
         team = request.form['team']
         level = request.form['level']
         
@@ -380,6 +383,41 @@ def stats():
         team_level_stats=team_level_stats,
         selected_days=days_filter
     )
+#Route 8: Update page
+@app.route('/edit/<int:url_id>', methods=['GET', 'POST'])
+def edit_url(url_id):
+    url_data = ShortUrlAPI.get_url_by_id(url_id)
+    if not url_data:
+        flash("URL not found.", "error")
+        return redirect(url_for('dashboard'))
+
+    if request.method == 'POST':
+        title = request.form.get('title')
+        team = request.form.get('team')
+        level = request.form.get('level')
+
+        if team not in TEAMS or level not in LEVELS:
+            flash("Invalid team or level selected.", "error")
+            return redirect(url_for('edit_url', url_id=url_id))
+
+        # Make PUT request to update
+        try:
+            response = requests.put(
+                f"{SHORTURL_ENDPOINT}/{url_id}",
+                json={"title": title, "team": team, "level": level},
+                headers={"Content-Type": "application/json"},
+                verify=False
+            )
+            if response.status_code == 200:
+                flash("URL updated successfully!", "success")
+            else:
+                flash("Failed to update URL.", "error")
+        except Exception as e:
+            flash(f"Error: {e}", "error")
+
+        return redirect(url_for('dashboard'))
+
+    return render_template('edit_url.html', url=url_data, teams=TEAMS, levels=LEVELS)
 # Error handlers
 @app.errorhandler(404)
 def not_found_error(error):

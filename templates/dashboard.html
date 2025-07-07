@@ -61,7 +61,7 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>ID</th>
+                    <th>Title</th>
                     <th>Original URL</th>
                     <th>Shortened URL</th>
                     <th>Team</th>
@@ -73,7 +73,13 @@
             <tbody>
                 {% for url in urls %}
                 <tr>
-                    <td>{{ url.id }}</td>
+                    <td>
+                        {% if url.title %}
+                        {{ url.title }}
+                        {% else %}
+                        <span class="text-muted">Auto</span>
+                        {% endif %}
+                    </td>
                     <td>
                         <div class="text-truncate" title="{{ url.originalUrl }}">
                             <a href="{{ url.originalUrl }}" target="_blank" class="text-decoration-none">
@@ -114,12 +120,15 @@
                     </td>
                     <td>
                         {% if url.shortenedUrl %}
-                        <button onclick="confirmDelete('hard', {{ url.id }})" class="btn btn-sm btn-danger" title="Permanent Delete">
-                            ❌
-                        </button>
                         <button onclick="copyToClipboard('{{ url.shortenedUrl }}')" class="btn btn-sm btn-info" title="Copy to clipboard">
                             📋
                         </button>
+                        <button onclick="confirmDelete('hard', {{ url.id }})" class="btn btn-sm btn-danger" title="Permanent Delete">
+                            ❌
+                        </button>
+                        <a href="/edit/{{ url.id }}" class="btn btn-sm btn-warning" title="Edit">
+                            ✏️
+                        </a>
                         {% endif %}
                     </td>
                 </tr>
