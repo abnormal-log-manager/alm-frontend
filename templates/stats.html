@@ -2,7 +2,7 @@
 {% extends "base.html" %} {% block title %}Statistics - Abnormal Log Manager{%
 endblock %} {% block content %}
 <div class="card-header">
-    <h1>URL Statistics</h1>
+    <h1 style="color: whitesmoke">URL Statistics</h1>
     <p class="text-muted">Overview of your log management system</p>
 </div>
 
@@ -22,7 +22,7 @@ endblock %} {% block content %}
 </div>
 <!-- Time selection-->
 <form method="get" action="/stats" style="margin-bottom: 1rem;">
-    <label for="days">Filter by:</label>
+    <label style="color: whitesmoke" for="days">Filter by:</label>
     <select name="days" onchange="this.form.submit()">
         <option value="">All Time</option>
         <option value="1" {% if selected_days==1 %}selected{% endif %}>Last 1 Day</option>
@@ -361,6 +361,9 @@ endblock %} {% block content %}
 </script>
 
 <style>
+    body{
+        background-color: #343a40;
+    }
     .charts-section {
         margin: 2rem 0;
     }
@@ -417,7 +420,7 @@ endblock %} {% block content %}
     }
 
     .card {
-        background: white;
+        background: whitesmoke;
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         margin-bottom: 2rem;
@@ -425,7 +428,7 @@ endblock %} {% block content %}
 
     .card-header {
         padding: 1.5rem;
-        border-bottom: 1px solid #dee2e6;
+        
     }
 
     .card-header h3 {
