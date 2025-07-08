@@ -1,4 +1,3 @@
-<!-- templates/create_url.html - Form to create new short URL -->
 {% extends "base.html" %}
 
 {% block title %}Create New Issue - Abnormal Log Manager{% endblock %}
@@ -6,17 +5,19 @@
 {% block content %}
 <div class="card">
     <div class="card-header">
-        <h2>Create New Issue</h2>
+        <h2 style="color: whitesmoke">Create New Issue</h2>
     </div>
-    
+
     <form method="POST">
+        <!-- Original URL -->
         <div class="form-group">
-            <label for="original_url" class="form-label">Event Original URL *</label>
+            <label style="color:whitesmoke" for="original_url" class="form-label">Event Original URL *</label><br />
             <input 
                 type="url" 
                 id="original_url" 
                 name="original_url" 
                 class="form-control" 
+                style="min-width: 910px; height: 35px;"
                 placeholder="https://example.com/very-long-url" 
                 required
                 value="{{ request.form.original_url if request.form.original_url }}"
@@ -24,128 +25,66 @@
             <small class="text-muted">Enter the long URL you want to shorten</small>
         </div>
 
+        <!-- Title -->
         <div class="form-group">
-            <label for="title" class="form-label">Title (optional)</label>
-            <input type="text" id="title" name="title" class="form-control" placeholder="e.g., Internal Server Error Log"
-                value="{{ request.form.title if request.form.title }}">
+            <label style="color:whitesmoke" for="title" class="form-label">Title (optional)</label><br />
+            <input 
+                type="text" 
+                id="title" 
+                name="title" 
+                class="form-control" 
+                style="min-width: 910px; height: 35px;"
+                placeholder="e.g., Internal Server Error Log"
+                value="{{ request.form.title if request.form.title }}"
+            >
             <small class="text-muted">Leave blank to auto-generate from URL</small>
         </div>
 
-        <div class="form-row">
-            <div class="form-group" style="width: 48%; display: inline-block; margin-right: 4%;">
-                <label for="team" class="form-label">Team *</label>
-                <select id="team" name="team" class="form-control" required>
-                    <option value="">Select Team</option>
-                    {% for team in teams %}
-                        <option value="{{ team }}" 
-                                {% if request.form.team == team %}selected{% endif %}>
-                            {{ team }}
-                        </option>
-                    {% endfor %}
-                </select>
-                <small class="text-muted">Choose the responsible team</small>
-            </div>
-
-            <div class="form-group" style="width: 48%; display: inline-block;">
-                <label for="level" class="form-label">Level *</label>
-                <select id="level" name="level" class="form-control" required>
-                    <option value="">Select Level</option>
-                    {% for level in levels %}
-                        <option value="{{ level }}" 
-                                {% if request.form.level == level %}selected{% endif %}>
-                            {{ level }}
-                        </option>
-                    {% endfor %}
-                </select>
-                <small class="text-muted">Choose the impact level</small>
-            </div>
+        <!-- Team -->
+        <div class="form-group">
+            <label style="color:whitesmoke" for="team" class="form-label">Team *</label>
+            <select id="team" name="team" class="form-control" required>
+                <option value="">Select Team</option>
+                {% for team in teams %}
+                    <option value="{{ team }}" {% if request.form.team == team %}selected{% endif %}>{{ team }}</option>
+                {% endfor %}
+            </select>
+            <small class="text-muted">Choose the responsible team</small>
         </div>
-        
-        <div>
-            <button type="submit" class="btn btn-primary">🔗 Create Event Short URL</button>
-            <a href="/" class="btn btn-secondary">Cancel</a>
+
+        <!-- Level -->
+        <div class="form-group">
+            <label style="color:whitesmoke" for="level" class="form-label">Level *</label>
+            <select id="level" name="level" class="form-control" required>
+                <option value="">Select Level</option>
+                {% for level in levels %}
+                    <option value="{{ level }}" {% if request.form.level == level %}selected{% endif %}>{{ level }}</option>
+                {% endfor %}
+            </select>
+            <small class="text-muted">Choose the impact level</small>
+        </div>
+
+        <!-- Buttons -->
+        <div style="margin-top: 1rem;">
+            <button type="submit" class="btn btn-primary">Create Event Short URL</button>
+            <a style="color:whitesmoke" href="/" class="btn btn-secondary">Cancel</a>
         </div>
     </form>
 </div>
 
-<div class="card">
-    <div class="card-header">
-        <h3>Field Descriptions</h3>
-    </div>
-    <div class="info-grid">
-        <div class="info-section">
-            <h4>🏢 Teams</h4>
-            <ul>
-                <li><strong>OPS</strong></li>
-                <li><strong>TMS</strong></li>
-                <li><strong>WMS</strong></li>
-            </ul>
-        </div>
-        <div class="info-section">
-            <h4>⚠️ Levels</h4>
-            <ul>
-                <li><strong>Warning</strong></li>
-                <li><strong>Error</strong></li>
-                <li><strong>Fatal</strong></li>
-            </ul>
-        </div>
-    </div>
-</div>
-
-<div class="card">
-    <div class="card-header">
-        <h3>Quick Examples</h3>
-    </div>
-    <ul>
-        <li><code>https://www.google.com/search?q=python+web+development</code></li>
-        <li><code>https://docs.python.org/3/tutorial/</code></li>
-        <li><code>https://github.com/abnormal-log-manager/alm-frontend</code></li>
-    </ul>
-    <p class="text-muted"><small>💡 Tip: You can enter URLs with or without http:// - we'll add it automatically!</small></p>
-</div>
-
 <style>
-.info-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    margin-top: 1rem;
+.form-control::placeholder {
+    padding-left: 0.25rem; /* adjust as needed */
+    color: #adb5bd; /* optional: lighter placeholder color */
 }
-
-.info-section h4 {
-    color: #495057;
-    margin-bottom: 0.5rem;
+.form-group {
+    margin-bottom: 1.25rem;
 }
-
-.info-section ul {
-    list-style-type: none;
-    padding-left: 0;
+.text-muted{
+    color: #6c757d;
 }
-
-.info-section li {
-    padding: 0.25rem 0;
-    border-bottom: 1px solid #f8f9fa;
-}
-
-.info-section li:last-child {
-    border-bottom: none;
-}
-
-.form-row {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-}
-
-@media (max-width: 768px) {
-    .info-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .form-group {
-        width: 100% !important;
-        margin-right: 0 !important;
-    }
+body {
+    background-color: #343a40;
 }
 </style>
 {% endblock %}
