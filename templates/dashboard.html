@@ -2,143 +2,148 @@
 
 {% block content %}
 
-    <div class="dashboard-header">
-        <h1>Abnormal Log Management Dashboard</h1>
-        <p class="text-muted">Manage your event URLs</p>
+<div class="dashboard-header">
+    <h1>Abnormal Log Management Dashboard</h1>
+    <p class="text-muted">Manage your event URLs</p>
+</div>
+
+<!-- Search and Filter Controls -->
+<div class="filters-group"
+    style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; align-items: center;">
+    <form method="get" action="/search" style="display: flex; gap: 0.5rem; align-items: center;">
+        <input type="text" name="query" class="form-control" placeholder="Search by original link or short link"
+            value="{{ request.args.get('query', '') }}" style="min-width: 350px; height: 33px;">
+        <button type="submit" class="btn btn-primary btn-sm">Search</button>
+    </form>
+    <div>
+        <button class="btn btn-primary btn-sm" onclick="document.getElementById('filterModal').style.display='block'">
+            ⚙️ Add filters
+        </button>
     </div>
-    
-        <!-- Search and Filter Controls -->
-        <div class="filters-group"
-            style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; align-items: center;">
-            <form method="get" action="/search" style="display: flex; gap: 0.5rem; align-items: center;">
-                <input type="text" name="query" class="form-control" placeholder="Search by original link or short link"
-                    value="{{ request.args.get('query', '') }}" style="min-width: 350px; height: 33px;">
-                <button type="submit" class="btn btn-primary btn-sm">Search</button>
-            </form>
-            <div>
-                <button class="btn btn-primary btn-sm"
-                    onclick="document.getElementById('filterModal').style.display='block'">
-                    ⚙️ Add filters
-                </button>
+</div>
+
+<!-- Filter Modal -->
+<div id="filterModal" class="modal-overlay"
+    style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:2000;">
+    <div class="modal-content"
+        style="background:#fff; max-width:500px; margin:10% auto; padding:2rem; border-radius:8px;">
+        <h2>Filters</h2>
+        <form method="get" action="/">
+            <div class="form-group">
+                <label>Created Date</label>
+                <input type="date" name="created" class="form-control" value="{{ selected_created }}">
             </div>
-        </div>
-    
-    <!-- Filter Modal -->
-    <div id="filterModal" class="modal-overlay"
-        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:2000;">
-        <div class="modal-content"
-            style="background:#fff; max-width:500px; margin:10% auto; padding:2rem; border-radius:8px;">
-            <h2>Filters</h2>
-            <form method="get" action="/">
-                <div class="form-group">
-                    <label>Created Date</label>
-                    <input type="date" name="created" class="form-control" value="{{ selected_created }}">
-                </div>
-                <div class="form-group">
-                    <label>Team</label>
-                    <select name="team" class="form-control">
-                        <option value="">All Teams</option>
-                        {% for t in ['OPS', 'OMS', 'TMS', 'WMS'] %}
-                        <option value="{{ t }}" {% if t==selected_team %}selected{% endif %}>{{ t }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Level</label>
-                    <select name="level" class="form-control">
-                        <option value="">All Levels</option>
-                        {% for l in ['Warn', 'Error', 'Fatal'] %}
-                        <option value="{{ l }}" {% if l==selected_level %}selected{% endif %}>{{ l }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Sort By</label>
-                    <select name="sort_by" class="form-control">
-                        <option value="">Sort By</option>
-                        <option value="id" {% if selected_sort=='id' %}selected{% endif %}>ID</option>
-                        <option value="team" {% if selected_sort=='team' %}selected{% endif %}>Team</option>
-                        <option value="level" {% if selected_sort=='level' %}selected{% endif %}>Level</option>
-                        <option value="created" {% if selected_sort=='created' %}selected{% endif %}>Created</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Order</label>
-                    <select name="descending" class="form-control">
-                        <option value="false" {% if not selected_descending %}selected{% endif %}>Asc</option>
-                        <option value="true" {% if selected_descending %}selected{% endif %}>Desc</option>
-                    </select>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-top: 1.5rem;">
-                    <button type="reset" class="btn btn-light">✕ Clear all filters</button>
-                    <button type="button" class="btn btn-secondary"
-                        onclick="document.getElementById('filterModal').style.display='none'">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Apply</button>
-                </div>
-            </form>
-        </div>
-    </div>
-    <!-- Page Size Selector -->
-    <div style="margin-bottom: 1rem;">
-        <form method="GET" action="/">
-            <label style="color: #dee2e6" for="page_size">Events per page:</label>
-            <select name="page_size" id="page_size" onchange="this.form.submit()">
-                <option value="10" {% if page_size==10 %}selected{% endif %}>10</option>
-                <option value="25" {% if page_size==25 %}selected{% endif %}>25</option>
-                <option value="50" {% if page_size==50 %}selected{% endif %}>50</option>
-            </select>
-            <input type="hidden" name="page" value="1">
+            <div class="form-group">
+                <label>Team</label>
+                <select name="team" class="form-control">
+                    <option value="">All Teams</option>
+                    {% for t in ['OPS', 'OMS', 'TMS', 'WMS'] %}
+                    <option value="{{ t }}" {% if t==selected_team %}selected{% endif %}>{{ t }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Level</label>
+                <select name="level" class="form-control">
+                    <option value="">All Levels</option>
+                    {% for l in ['Warn', 'Error', 'Fatal'] %}
+                    <option value="{{ l }}" {% if l==selected_level %}selected{% endif %}>{{ l }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Sort By</label>
+                <select name="sort_by" class="form-control">
+                    <option value="">Sort By</option>
+                    <option value="id" {% if selected_sort=='id' %}selected{% endif %}>ID</option>
+                    <option value="team" {% if selected_sort=='team' %}selected{% endif %}>Team</option>
+                    <option value="level" {% if selected_sort=='level' %}selected{% endif %}>Level</option>
+                    <option value="created" {% if selected_sort=='created' %}selected{% endif %}>Created</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Order</label>
+                <select name="descending" class="form-control">
+                    <option value="false" {% if not selected_descending %}selected{% endif %}>Asc</option>
+                    <option value="true" {% if selected_descending %}selected{% endif %}>Desc</option>
+                </select>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: 1.5rem;">
+                <button type="reset" class="btn btn-light">✕ Clear all filters</button>
+                <button type="button" class="btn btn-secondary"
+                    onclick="document.getElementById('filterModal').style.display='none'">Cancel</button>
+                <button type="submit" class="btn btn-primary">Apply</button>
+            </div>
         </form>
     </div>
-    <!-- Link Cards -->
-    <div class="link-cards" style="display: flex; flex-direction: column; gap: 1rem;">
-        {% if urls %}
-        {% for url in urls %}
-        <div class="card"
-            style="padding: 1rem; border-radius: 8px; background: #3e454c; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                <div style="flex-grow: 1; padding-right: 1rem;">
-                    <strong style="color:whitesmoke; font-size: 1rem;">{{ url.title or 'Auto' }}</strong><br>
-                    {% if url.shortenedUrl %}<a style="color: #dee2e6;" href="{{ url.shortenedUrl }}" target="_blank">{{ url.shortenedUrl
-                        }}</a><br>{% endif %}
-                    <small class="text-muted">{{ url.originalUrl | truncate_url(60) }}</small>
-                </div>
-                <div style="white-space: nowrap;">
-                    {% if url.shortenedUrl %}<button onclick="copyToClipboard('{{ url.shortenedUrl }}')"
-                        class="btn btn-sm btn-info">📋</button>{% endif %}
-                    <button onclick="confirmDelete('hard', {{ url.id }})" class="btn btn-sm btn-danger" title="Permanent Delete">
-                        ❌
-                    </button>
-                    <a href="/edit/{{ url.id }}" class="btn btn-sm btn-warning">✏️</a>
-                </div>
+</div>
+<!-- Page Size Selector -->
+<div style="margin-bottom: 1rem;">
+    <form method="GET" action="/">
+        <label style="color: #dee2e6" for="page_size">Events per page:</label>
+        <select name="page_size" id="page_size" onchange="this.form.submit()">
+            <option value="10" {% if page_size==10 %}selected{% endif %}>10</option>
+            <option value="25" {% if page_size==25 %}selected{% endif %}>25</option>
+            <option value="50" {% if page_size==50 %}selected{% endif %}>50</option>
+        </select>
+        <input type="hidden" name="page" value="1">
+    </form>
+</div>
+<!-- Link Cards -->
+<div class="link-cards" style="display: flex; flex-direction: column; gap: 1rem;">
+    {% if urls %}
+    {% for url in urls %}
+    <div class="card"
+        style="padding: 1rem; border-radius: 8px; background: #3e454c; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div style="flex-grow: 1; padding-right: 1rem;">
+                <strong style="color:whitesmoke; font-size: 1rem;">{{ url.title or 'Auto' }}</strong><br>
+                {% if url.shortenedUrl %}<a style="color: #dee2e6;" href="{{ url.shortenedUrl }}" target="_blank">{{
+                    url.shortenedUrl
+                    }}</a><br>{% endif %}
+                <small class="text-muted">{{ url.originalUrl | truncate_url(60) }}</small>
             </div>
-            <div
-                style="margin-top: 0.75rem; display: flex; gap: 2rem; align-items: center; font-size: 0.875rem; color: whitesmoke;">
-                <span>📅 {{ url.createDateIct | format_datetime if url.createDateIct else 'N/A' }}</span>
-                {% if url.team %}
-                <span class="badge {{ url.team | get_team_badge_class }}">
-                    {{ url.team }}
-                </span>
-                {% else %}
-                <span class="text-muted">N/A</span>
+            <div style="white-space: nowrap;">
+                {% if url.shortenedUrl %}
+                <button onclick="copyToClipboard('{{ url.shortenedUrl }}')" class="icon-button" title="Copy">
+                    <img src="/static/icons/copy.png" alt="Copy" />
+                </button>
                 {% endif %}
-                {% if url.level %}
-                <span class="badge {{ url.level | get_level_badge_class }}">
-                    {{ url.level }}
-                </span>
-                {% else %}
-                <span class="text-muted">N/A</span>
-                {% endif %}
+                <button onclick="confirmDelete('hard', {{ url.id }})" class="icon-button" title="Permanent Delete">
+                    <img src="/static/icons/delete.png" alt="Delete" />
+                </button>
+                <a href="/edit/{{ url.id }}" class="icon-button" title="Edit">
+                    <img src="/static/icons/edit.png" alt="Edit" />
+                </a>
             </div>
         </div>
-        {% endfor %}
-        {% else %}
-        <div class="loading">
-            <h3>No URLs found</h3>
-            <p>Start by <a href="/create">creating your first issue</a></p>
+        <div
+            style="margin-top: 0.75rem; display: flex; gap: 2rem; align-items: center; font-size: 0.875rem; color: whitesmoke;">
+            <span>📅 {{ url.createDateIct | format_datetime if url.createDateIct else 'N/A' }}</span>
+            {% if url.team %}
+            <span class="badge {{ url.team | get_team_badge_class }}">
+                {{ url.team }}
+            </span>
+            {% else %}
+            <span class="text-muted">N/A</span>
+            {% endif %}
+            {% if url.level %}
+            <span class="badge {{ url.level | get_level_badge_class }}">
+                {{ url.level }}
+            </span>
+            {% else %}
+            <span class="text-muted">N/A</span>
+            {% endif %}
         </div>
-        {% endif %}
     </div>
+    {% endfor %}
+    {% else %}
+    <div class="loading">
+        <h3>No URLs found</h3>
+        <p>Start by <a href="/create">creating your first issue</a></p>
+    </div>
+    {% endif %}
+</div>
 
 <!-- Pagination -->
 <div class="pagination" style="text-align: center; margin-top: 1rem;">
@@ -210,6 +215,7 @@
     body {
         background-color: #343a40;
     }
+
     /* Badge styles - matching the statistics page */
     .badge {
         display: inline-block;
@@ -269,7 +275,8 @@
     .dashboard-header {
         max-width: 800px;
         text-align: left;
-        padding-left: 0rem; /* Adjust this to match left padding of content/cards */
+        padding-left: 0rem;
+        /* Adjust this to match left padding of content/cards */
         margin-bottom: 1rem;
         color: whitesmoke;
     }
@@ -397,6 +404,31 @@
     .loading a:hover {
         text-decoration: underline;
     }
+
+    .icon-button {
+        background-color: #484f57;
+        border: 1px solid #5a6268;
+        padding: 6px;
+        margin: 0 4px;
+        border-radius: 6px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .icon-button img {
+        width: 16px;
+        height: 16px;
+    }
+
+    .icon-button:hover {
+        background-color: #e5e4e2;
+        /* Platinum */
+        border-color: #ccc;
+        cursor: pointer;
+    }
+
 
     /* Responsive adjustments */
     @media (max-width: 768px) {
