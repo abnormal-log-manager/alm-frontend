@@ -11,7 +11,8 @@ app = Flask(__name__)
 app.secret_key = 'your-secret-key-change-this'  # Change this in production
 
 # Configuration - Update these to match your API
-API_BASE_URL = 'http://alm-api/api' #'http://172.25.192.1:8080/api'   # Change to your API URL
+API_BASE_URL = 'http://alm-api/api'  # Change to your API URL
+#API_BASE_URL = 'http://172.25.192.1:8080/api' #local
 SHORTURL_ENDPOINT = f'{API_BASE_URL}/ShortUrl'
 REDIRECT_ENDPOINT = f'{API_BASE_URL}/r'
 
