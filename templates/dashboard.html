@@ -77,6 +77,13 @@
         </form>
     </div>
 </div>
+<!-- Import & Export -->
+<form method="post" action="/import-excel" enctype="multipart/form-data" style="display: inline-block;">
+    <label for="excel_file" class="btn btn-sm btn-outline-primary">Import Excel</label>
+    <input type="file" id="excel_file" name="excel_file" style="display: none;" onchange="this.form.submit()">
+</form>
+
+<a href="/export-excel" class="btn btn-sm btn-outline-primary">Export Excel</a>
 <!-- Page Size Selector -->
 <div style="margin-bottom: 1rem;">
     <form method="GET" action="/">
@@ -352,6 +359,7 @@
     }
 
     .btn-outline-primary {
+        color: #fff;
         background-color: #4d4e52;
         border: 1.4px solid #626a70;
     }

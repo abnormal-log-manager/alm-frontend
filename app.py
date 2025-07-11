@@ -383,7 +383,7 @@ def stats():
         team_level_stats=team_level_stats,
         selected_days=days_filter
     )
-#Route 8: Update page
+# Route 9: Update page
 @app.route('/edit/<int:url_id>', methods=['GET', 'POST'])
 def edit_url(url_id):
     url_data = ShortUrlAPI.get_url_by_id(url_id)
@@ -418,6 +418,44 @@ def edit_url(url_id):
         return redirect(url_for('dashboard'))
 
     return render_template('edit_url.html', url=url_data, teams=TEAMS, levels=LEVELS)
+# Route 10: Export
+@app.route('/export-excel')
+def export_excel():
+    try:
+        response = requests.get(f"{SHORTURL_ENDPOINT}/export", verify=False)
+        if response.status_code == 200:
+            return response.content, 200, {
+                'Content-Disposition': 'attachment; filename=short_urls.xlsx',
+                'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            }
+        else:
+            flash("Failed to export data", "error")
+    except Exception as e:
+        flash(f"Export error: {e}", "error")
+    return redirect(url_for('dashboard'))
+# Route 11: Import
+@app.route('/import-excel', methods=['POST'])
+def import_excel():
+    file = request.files.get('excel_file')
+    if not file:
+        flash("No file selected", "error")
+        return redirect(url_for('dashboard'))
+
+    try:
+        response = requests.post(
+            f"{SHORTURL_ENDPOINT}/import",
+            files={'file': (file.filename, file.stream, file.content_type)},
+            verify=False
+        )
+        if response.status_code == 200:
+            msg = response.json().get("message", "Import completed.")
+            flash(msg, "success")
+        else:
+            flash("Import failed.", "error")
+    except Exception as e:
+        flash(f"Import error: {e}", "error")
+
+    return redirect(url_for('dashboard'))
 # Error handlers
 @app.errorhandler(404)
 def not_found_error(error):
