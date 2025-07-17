@@ -1,5 +1,21 @@
 # Abnormal Log Manager – Documentation
+## 📚 Mục lục
 
+- [Tổng quan](#tổng-quan)
+- [Các chức năng chính](#các-chức-năng-chính)
+  - [1. Tạo Short Link (Create)](#1-tạo-short-link-create)
+  - [2. Quản lý URL Log (Dashboard)](#2-quản-lý-url-log-dashboard)
+  - [3. Thống kê lỗi (Statistics)](#3-thống-kê-lỗi-statistics)
+  - [4. Export & Import dữ liệu](#4-export--import-dữ-liệu)
+- [Cấu trúc dữ liệu](#cấu-trúc-dữ-liệu)
+- [Các route chính](#các-route-chính)
+- [Giao diện & UX](#giao-diện--ux)
+- [Công nghệ sử dụng](#công-nghệ-sử-dụng)
+- [TODO](#todo)
+- [Source Code](#source-code)
+- [Document chi tiết](#document-chi-tiết)
+
+---
 # Tổng quan
 
 **Abnormal Log Manager (ALM)** là một web app quản lý log lỗi, cho phép người dùng:
