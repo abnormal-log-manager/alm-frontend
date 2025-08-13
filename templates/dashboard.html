@@ -16,9 +16,9 @@
         <form method="get" action="/search" style="display: flex; gap: 0.5rem; align-items: center;">
             <input type="text" name="query" class="form-control" placeholder="Search by original link or short link"
                 value="{{ request.args.get('query', '') }}" style="min-width: 350px; height: 33px;">
-            <button type="submit" class="btn btn-primary btn-sm">Search</button>
+            <button type="submit" class="btn btn-outline-primary btn-sm">Search</button>
         </form>
-        <button class="btn btn-primary btn-sm" onclick="document.getElementById('filterModal').style.display='block'">
+        <button class="btn btn-outline-primary btn-sm" onclick="document.getElementById('filterModal').style.display='block'">
             ⚙️ Add filters
         </button>
     </div>
@@ -161,9 +161,9 @@
 <!-- Pagination -->
 <div class="pagination" style="text-align: center; margin-top: 1rem;">
     {% if page > 1 %}
-    <a href="?page={{ page - 1 }}&page_size={{ page_size }}" class="btn btn-sm btn-primary">Previous</a>
+    <a href="?page={{ page - 1 }}&page_size={{ page_size }}" class="btn btn-sm btn-outline-primary">Previous</a>
     {% else %}
-    <span class="btn btn-sm btn-primary disabled">Previous</span>
+    <span class="btn btn-sm btn-outline-primary disabled">Previous</span>
     {% endif %}
 
     {% for p in range(1, total_pages + 1) %}
@@ -171,10 +171,10 @@
         class="btn btn-sm {% if p == page %}btn-primary{% else %}btn-outline-primary{% endif %}">{{ p }}</a>
     {% endfor %}
 
-    {% if page < total_pages %} <a href="?page={{ page + 1 }}&page_size={{ page_size }}" class="btn btn-sm btn-primary">
+    {% if page < total_pages %} <a href="?page={{ page + 1 }}&page_size={{ page_size }}" class="btn btn-sm btn-outline-primary">
         Next</a>
         {% else %}
-        <span class="btn btn-sm btn-primary disabled">Next</span>
+        <span class="btn btn-sm btn-outline-primary disabled">Next</span>
         {% endif %}
 </div>
 
@@ -359,7 +359,7 @@
     }
 
     .btn-primary {
-        color: #fff;
+        color: black;
         background-color: #4d4e52;
         border: 1.4px solid #626a70;
     }
